@@ -1,4 +1,5 @@
 # Byte-compiled / optimized / DLL files
+src/main/python/com.schleuder/__pycache__/
 __pycache__/
 *.py[cod]
 *$py.class
