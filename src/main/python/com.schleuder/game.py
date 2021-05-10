@@ -7,38 +7,42 @@ import math
 
 
 class Game:
-    livingCells = []
+    livingCells = set
     gen = 0
 
-    def __init__(self):
-        self.config = GameConfig()
-        self.spawn = SpawnConfig()
-        self.livingCells = []
+    def __init__(self, gameConfig = GameConfig(), spawnConfig = SpawnConfig()):
+        self.config = gameConfig
+        self.spawn = spawnConfig
+        self.livingCells = set()
         self.gen = 0
         self.initialize()
 
     def initialize(self):
-        for x in range(1, int(self.spawn.initTotal)):
-             point = [None for _ in range(self.config.dimension)]
-             for dim in range(0, self.config.dimension):
-                 point[dim] = self.spawn.initSpawnDistance + randint(-50, 50)
-             self.livingCells.append(point)
+        if (self.spawn.initSet != None):
+            self.livingCells = self.spawn.initSet
+        else:
+            for x in range(1, int(self.spawn.initTotal)):
+                point = [None for _ in range(self.config.dimension)]
+                for dim in range(0, self.config.dimension):
+                  point[dim] = self.spawn.initSpawnDistance + randint(-self.spawn.initSpawnDistance, self.spawn.initSpawnDistance)
+                self.livingCells.add(tuple(point))
 
     def next(self):
         # kill
-        next = self.livingCells.copy()
+        next = set()
         potentials = set()
         for cell in self.livingCells:
             n = self.neighbours(cell, True)
             potentials.update(n.toEnliven)
             if self.ruleE(n.number):
-                next.append(cell)
-        print("{} potentials found".format(len(potentials)))
+                next.add(cell)
+
         for pot in potentials:
             n = self.neighbours(pot)
             if self.ruleF(n.number):
-                next.append(pot)
+                next.add(pot)
         self.livingCells = next
+        return self.livingCells
     
     def ruleE(self, numberNeighbors):
         return (self.config.El <= numberNeighbors <= self.config.Eu)
@@ -49,41 +53,56 @@ class Game:
     def neighbours(self, cell, potentials=False):
         neighbours = []
         toEnliven = set()
-        for i in self.livingCells:
-            print("{} neighbours".format(i))
-            for j in self.livingCells:
-                if i == j:
-                    continue
-                dist = 0
-                distVec = [None for _ in range(self.config.dimension)]
-                for dim in range(0, self.config.dimension):
-                    distVec[dim] = i[dim] - j[dim]
-                    dist += abs(distVec[dim])
-                if (dist <= self.config.dimension):
-                    neighbours.append(j)
-                    continue
-                if (potentials and dist <= self.config.dimension * 2):
+        for j in self.livingCells:
+            if cell == j:
+                continue
+            dist = 0
+            distVec = [None for _ in range(self.config.dimension)]
+            for dim in range(0, self.config.dimension):
+                distVec[dim] = cell[dim] - j[dim]
+                dist += pow(distVec[dim], 2)
+            dist = math.sqrt(dist)
+            staticDistOneNodes = set()
+            for dim in range(0, self.config.dimension):
+                plus = list(cell)
+                minus = plus.copy()
+                plus[dim] = plus[dim] + 1
+                minus[dim] = minus[dim] - 1
+                plus = tuple(plus)
+                minus = tuple(minus)
+                if (plus not in self.livingCells):
+                    staticDistOneNodes.add(plus)
+                if (minus not in self.livingCells):
+                    staticDistOneNodes.add(minus)
+            toEnliven.update(staticDistOneNodes)
+            if (dist <= math.sqrt(self.config.dimension)):
+                neighbours.append(j)
+            elif (potentials and dist <= self.config.dimension * 2 and max(max(distVec), abs(min(distVec))) <= 2):
                     permutRounding = set()
                     for dim in range(0, self.config.dimension):
-                        v1 = i[dim] + math.floor(distVec[dim] / 2.0)
-                        v2 = i[dim] + math.ceil(distVec[dim] / 2.0)
+                        v1 = j[dim] + math.floor(distVec[dim] / 2.0)
+                        v2 = j[dim] + math.ceil(distVec[dim] / 2.0)
                         # calculate permutations for ceil/floor (mostly important for higher-dimentional stuff)
-                        for teilv in permutRounding:
-                            if (v1 != v2):
-                                double = teilv.copy()
-                                double.append(v1)
-                                v.add(double)
-                            teilv.append(v2)
+                        if (len(permutRounding) == 0):
+                            permutRounding.add(tuple([v1]))
+                            permutRounding.add(tuple([v2]))
+                        else:
+                            newPermuts = set()
+                            for teilv in permutRounding:
+                                if (v1 != v2):
+                                    newPermuts.add(teilv + tuple([v1]))
+                                newPermuts.add(teilv + tuple([v2]))
+                            permutRounding = newPermuts
                     toEnliven.update(permutRounding)
         return Neighbours(len(neighbours), toEnliven)
 
-    def status(self):
+    def status(self, size = 30, printField = False):
         print(self.livingCells)
-        if (self.config.dimension == 2):
-            for y in range(0,99):
+        if (self.config.dimension == 2 and printField):
+            for y in range(size, 0, -1):
                 str = ""
-                for x in range(0,99):
-                    if ([x, y] in self.livingCells):
+                for x in range(0, size):
+                    if ((x, y) in self.livingCells):
                         str += "#"
                     else:
                         str += "."
