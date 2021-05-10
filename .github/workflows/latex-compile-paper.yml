@@ -14,8 +14,7 @@ jobs:
       - name: Compile LaTeX document
         uses: xu-cheng/latex-action@v2
         with:
-          latexmk_use_lualatex: true
-          working_directory: paper/
+          working_directory: .paper/
           root_file: main.tex
 
       - name: Create Release
