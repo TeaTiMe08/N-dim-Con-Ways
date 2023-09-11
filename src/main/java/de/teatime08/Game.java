@@ -3,10 +3,11 @@ package de.teatime08;
 import de.teatime08.configuration.ConwaysConfiguration;
 import de.teatime08.configuration.IConfiguration;
 
+import java.io.Closeable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Game {
+public class Game implements Closeable, Banq {
 
     IConfiguration configuration = new ConwaysConfiguration();
     protected final Set<Cell> initial = new HashSet<>();
@@ -34,10 +35,12 @@ public class Game {
     }
 
     public void next() {
+        long banqT = System.nanoTime();
         final Map<Cell, IRule.Action> allRules = new HashMap<>();
         for (IRule rule : configuration.rules()) {
             allRules.putAll(rule.apply(this));
         }
+        banq("next-applyRules", System.nanoTime() - banqT);
         cells.clear();
         allRules.forEach((cell, action) -> {
             if (action == IRule.Action.KILL) {
@@ -51,9 +54,13 @@ public class Game {
         });
         boolean shapeDetected = false;
         if (generation > 0) {
+            banqT = System.nanoTime();
             shapeDetected = shapesDetector.nextGenFinished(cells);
+            banq("next-nextGenFinished", System.nanoTime() - banqT);
         }
+        banqT = System.nanoTime();
         handleNextGerationFinished(shapeDetected);
+        banq("next-handleGenerationFinished", System.nanoTime() - banqT);
         generation++;
     }
 
@@ -158,5 +165,10 @@ public class Game {
 
     public static String cellsToString(Set<Cell> cells) {
         return cells.stream().map( x -> Arrays.toString(x.getPosition())).collect(Collectors.joining(", "));
+    }
+
+    @Override
+    public void close() {
+        printMedians();
     }
 }

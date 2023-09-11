@@ -5,11 +5,11 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class Banq {
+public interface Banq {
     /**
      * For each method assigned to the @Banq Annotations, define a List of measures stored in this HashMap.
      */
-    private final Map<String, LinkedList<BanqTick>> banqMeasures = new HashMap<>();
+    final Map<String, LinkedList<BanqTick>> banqMeasures = new HashMap<>();
 
     /**
      * A BanqTick is a wrapper for a measure of ticks made with Banq.
@@ -29,7 +29,7 @@ public abstract class Banq {
      * @param key the key to search for in the measurements
      * @param exectimeNanos the nanoseconds the execution took
      */
-    public void banq(String key, Long exectimeNanos) {
+    public default void banq(String key, Long exectimeNanos) {
         LinkedList<BanqTick> keyTimes = banqMeasures.get(key);
         if (keyTimes == null) {
             keyTimes = new LinkedList<>();
@@ -43,7 +43,7 @@ public abstract class Banq {
     /**
      * @return Gets the current stored Measures.
      */
-    public Map<String, LinkedList<BanqTick>> getBanqMeasures() {
+    public default Map<String, LinkedList<BanqTick>> getBanqMeasures() {
         return banqMeasures;
     }
 
@@ -51,7 +51,7 @@ public abstract class Banq {
      * Prints all the measures to a big String, implemented for logging etc. Unix Line seperator.
      * @return A big string for all measures made.
      */
-    public String printToString() {
+    public default String printToString() {
         StringBuilder sb = new StringBuilder();
         banqMeasures.forEach((x, y) -> {
             y.forEach(z -> sb.append(String.format("%-40s", x) + z.toString() + "\n"));
@@ -59,12 +59,21 @@ public abstract class Banq {
         return sb.toString();
     }
 
+    public default void printMedians() {
+        Set<String> unordered = new HashSet<>();
+        banqMeasures.forEach((x, y) -> unordered.add(
+            String.format("%-20s", x) + "| " +
+                calculateMedian(y.stream().map(BanqTick::benchNanoTime).collect(Collectors.toList())) / 1_000_000 //milliseconds
+        ));
+        unordered.stream().sorted().forEach(System.out::println);
+    }
+
     /**
      * Calculates the median value for a given key
      * @param key the key to search for in the measurements
      * @return the median value of bench times
      */
-    public double median(String key) {
+    public default double median(String key) {
         return calculateMedian(banqMeasures.get(key).stream().map(x -> x.benchNanoTime).collect(Collectors.toList()));
     }
 
@@ -108,7 +117,7 @@ public abstract class Banq {
      * @param key the key to search for in the measurements
      * @return a boxplot
      */
-    public BoxPlot boxPlot(String key) {
+    public default BoxPlot boxPlot(String key) {
         return createBoxPlot(banqMeasures.get(key).stream().map(x -> x.benchNanoTime).collect(Collectors.toList()));
     }
 
@@ -130,7 +139,7 @@ public abstract class Banq {
      * @param percentile the percentile to be measured at
      * @return percentile
      */
-    public double percentile(String key, int percentile) {
+    public default double percentile(String key, int percentile) {
         return calculatePercentile(
             banqMeasures.get(key).stream().map(x -> x.benchNanoTime).collect(Collectors.toList()),
             percentile

@@ -5,10 +5,12 @@ import org.jgrapht.alg.isomorphism.VF2GraphIsomorphismInspector;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ShapesDetector {
+public class ShapesDetector implements Banq {
 
     static final int maxSizePastMemory = 1000;
     LinkedList<Set<Cell>> past = new LinkedList<>();
@@ -24,12 +26,14 @@ public class ShapesDetector {
             past.add(new HashSet<>(cells));
             return false;
         } else {
+            long banqT = System.nanoTime();
             if (past.size() > maxSizePastMemory)
                 past.pop();
             past.stream().filter(cells::equals).findFirst().ifPresent( x -> {
                 handleShapeDetected(x);
             });
             past.add(new HashSet<>(cells));
+            banq("nextGenFinished", System.nanoTime() - banqT);
             return true;
         }
     }
@@ -38,11 +42,13 @@ public class ShapesDetector {
         if (detectedShape == null || detectedShape.isEmpty())
             return;
         Thread thread = new Thread(() -> {
-
+            long banqT = System.nanoTime();
             Set<Set<Cell>> computeUnits = splitIntoComputeUnits(detectedShape);
+            banq("splitComputeUnits", System.nanoTime() - banqT);
 
             // create graphs and make a Map for all Cells graphs
-            //todo optimize innstead of check in n graphs we can check only sqrt(n) graphs
+            //todo optimize instead of check in n graphs we can check only sqrt(n) graphs
+            banqT = System.nanoTime();
             Map<SimpleGraph<Integer, DefaultEdge>, Set<Cell>> detectedGraphs = computeUnits.parallelStream()
                 .map(ShapesDetector::createGraph)
                 .collect(Collectors.toMap(
@@ -50,6 +56,7 @@ public class ShapesDetector {
                     y -> y.shape,
                     (existingValue, newValue) -> newValue // Handle collisions if keys are duplicated
                 ));
+            banq("createGraph", System.nanoTime() - banqT);
             // skip first and assign
             if (foundGraphs.isEmpty()) {
                 foundShapes.addAll(computeUnits);
@@ -57,6 +64,7 @@ public class ShapesDetector {
             }
             // check if isomorphic graphs were found, add the rest.
             else {
+                banqT = System.nanoTime();
                 Map<SimpleGraph<Integer, DefaultEdge>, Set<Cell>> newGraphs  = detectedGraphs.keySet().parallelStream()
                     .filter(graph -> foundGraphs.stream().noneMatch( other -> isIsomorphic(graph, other)))
                     .collect(Collectors.toMap(
@@ -66,6 +74,7 @@ public class ShapesDetector {
                     ));
                 foundShapes.addAll(newGraphs.values());
                 foundGraphs.addAll(newGraphs.keySet());
+                banq("isomorphic", System.nanoTime() - banqT);
             }
         });
         thread.start();

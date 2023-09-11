@@ -1,5 +1,6 @@
 package de.teatime08;
 
+import java.util.List;
 import java.util.Map;
 
 public interface IRule {

@@ -104,23 +104,21 @@ public class Gui extends JFrame {
             @Override
             public void windowClosing(WindowEvent e) {
                 shouldRun = false;
-                if (game instanceof Closeable closeableGame) {
+                long waitTorGeneration = System.currentTimeMillis();
+                mainPanel.statusText = "👋";
+                SwingUtilities.invokeLater(() -> {
+                    mainPanel.repaint();
+                });
+                shouldCompute = false;
+                shouldRun = false;
+                while (isBlockedGenerating) {
                     try {
-                        long waitTorGeneration = System.currentTimeMillis();
-                        mainPanel.statusText = "👋";
-                        SwingUtilities.invokeLater(() -> {
-                            mainPanel.repaint();
-                        });
-                        shouldCompute = false;
-                        shouldRun = false;
-                        while (isBlockedGenerating) {
-                            Thread.sleep(50);
-                        }
-                        closeableGame.close();
-                    } catch (IOException | InterruptedException ex) {
+                        Thread.sleep(50);
+                    } catch (InterruptedException ex) {
                         throw new RuntimeException(ex);
                     }
                 }
+                game.close();
             }
         });
     }

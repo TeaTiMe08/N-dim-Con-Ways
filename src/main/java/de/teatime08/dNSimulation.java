@@ -4,14 +4,14 @@ import java.io.Closeable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class dNSimulation extends Game implements Closeable {
+public class dNSimulation extends Game {
 
     final static Random random = new Random(System.currentTimeMillis());
 
     static int DIMENSION = 3;
     final static double lowerBoundCellsPerSim = 0.0, upperBoundCellsPerSim = 0.9;
     final static int numberGenerationsCheckedBeforeRegenerate = 150;
-    final static int numberCyclesPerRadius = 10000;
+    final static int numberCyclesPerRadius = 1000;
     int currentCubeSizeCycle = 0;
     int currentCubeSize = 1;
 
@@ -92,6 +92,7 @@ public class dNSimulation extends Game implements Closeable {
                     .sorted(Comparator.comparingInt(String::length))
                     .forEach(System.out::println);
             });
+        super.close();
     }
 
     private int getShapeDimension(Set<Cell> cells) {

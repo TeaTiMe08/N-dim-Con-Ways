@@ -107,7 +107,7 @@ public class MainPanel extends JPanel {
 
     private void updateTimedTextLabels() {
         // paint tacho
-        double rpm = (double)(60_000_000_000L / gui.tacho);
+        double rpm = (double)(60_000_000_000L / Math.max(0.000001, gui.tacho));
         DecimalFormat df = new DecimalFormat("###,###,###");
         speedText = "SPEED: " + df.format(rpm) + " RPM";
         lastTimeOfTimedTextUpdate = System.currentTimeMillis();
