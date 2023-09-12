@@ -10,11 +10,20 @@ The GoL describes, if a cell is alive or dead and a ruleset of the cells, if a p
 
 For mor information on the topis, research will be displayed in the sub directory
 
-## Problems
+## Shapes found
+# 2D Shapes
+<input style="width:100%" type="text" value="">
+[0, 4, 2], [0, 4, 3], [0, 3, 2], [0, 3, 3]
+[3, 1, -6], [4, 1, -6], [3, -1, -6], [4, -1, -6], [3, -2, -6], [4, -2, -6]
+[2, 5, 4], [1, 4, 4], [2, 4, 4], [-1, 5, 4], [-2, 4, 4], [-1, 4, 4], [1, 5, 4]
+[-4, 2, -6], [-4, 1, -6], [-3, 2, -6], [-3, 1, -6], [-4, -1, -6], [-3, -1, -6]
+[1, 0, 0], [2, 0, -1], [2, 0, 0], [-2, 0, -1], [-2, 0, 0], [-1, 0, -1], [-1, 0, 0], [1, 0, -1]
+[-1, 3, -2, -2], [1, 3, -3, -2], [-2, 3, -3, -2], [-1, 3, -3, -2], [-2, 3, -2, -2], [2, 3, -3, -2], [-2, 3, 3, -2], [-1, 3, 2, -2], [2, 3, -2, -2], [1, 3, -2, -2], [-1, 3, 3, -2], [-2, 3, 2, -2], [1, 3, 3, -2], [2, 3, 2, -2], [1, 3, 2, -2], [2, 3, 3, -2]
+[-2, -3, -3, -2], [-2, -3, -2, -2], [-1, -3, -3, -2], [1, -3, -3, -2], [-2, -3, 2, -2], [-1, -3, -2, -2], [2, -3, -2, -2], [1, -3, -2, -2], [2, -3, -3, -2], [-1, -3, 2, -2], [-2, -3, 3, -2], [1, -3, 3, -2], [2, -3, 2, -2], [1, -3, 2, -2], [-1, -3, 3, -2], [2, -3, 3, -2]
 
-1. Make Simulation fast enough
-1.1 Optimize Vector data structure for optimizing the search for nearest neighbour
-1.2 Optimize multithreaded search for nodes
-1.3 Optmize Space of Vector
-2. Visual Interface for Testing
-3. Find a good evaluation function which judges/scores a future generation for successful ruleset.
+# 3D Shapes
+<input style="width:100%" type="text" value="[-2, 2, -1], [-1, 2, -1], [-2, 1, -1], [-2, 2, 1], [-1, 1, -1], [-1, 2, 1], [-2, 1, 1], [-1, 1, 1]">
+<input style="width:100%" type="text" value="[-4, 5, -6], [-3, 5, -6], [-4, 5, -5], [-4, 3, -6], [-3, 5, -5], [-3, 3, -6], [-4, 3, -5], [-3, 3, -5]">
+After random reflection was implemented
+<input style="width:100%" type="text" value="[2, -1, -2], [2, -2, -3], [2, -2, -2], [-2, -1, -3], [-2, -2, -3], [-2, -1, -2], [0, 1, -2], [-2, -2, -2], [0, 0, -2], [0, 1, -1], [0, 0, -1], [2, -1, -3]">
+<input style="width:100%" type="text" value="[-2, 2, 1, 1], [-2, 1, 0, 1], [-2, 1, 1, 1], [-2, 2, 0, 1], [-2, -2, 1, 1], [2, 2, 0, 1], [-2, -1, 0, 1], [2, 2, 1, 1], [2, 1, 0, 1], [-2, -1, 1, 1], [-2, -2, 0, 1], [2, 1, 1, 1], [2, -1, 1, 1], [2, -2, 0, 1], [2, -1, 0, 1], [2, -2, 1, 1]">

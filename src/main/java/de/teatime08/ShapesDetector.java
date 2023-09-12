@@ -86,7 +86,7 @@ public class ShapesDetector implements Banq {
         cells.stream().forEach(cell -> {
             Set<Set<Cell>> alreadyFound = splits.parallelStream().filter(set -> set.contains(cell)).collect(Collectors.toSet());
             Set<Cell> singleNeighbours = cells.parallelStream()
-                .filter(cellfilter -> cell.calculateManhattanDistanceTo(cellfilter) <= dim)
+                .filter(cellfilter -> cell.calculateManhattanDistanceTo(cellfilter) <= dim) //todo why dim not dim-1
                 .collect(Collectors.toSet());
             if (alreadyFound.isEmpty()) {
                 singleNeighbours.add(cell);
