@@ -41,7 +41,7 @@ public class ConwaysConfiguration extends IConfiguration implements Banq {
                         .filter(x -> ! game.getCells().contains(x))
                         .filter(x -> ! enlivenAlreadyChecked.contains(x))
                         .collect(Collectors.toSet());
-                    banq("rule-filterForNeightbours", System.nanoTime() - banqT);
+                    banq("rule-filterForNeighbours", System.nanoTime() - banqT);
                     // check neighbours for enliven
                     banqT = System.nanoTime();
                     potentials.forEach(neighbour -> {

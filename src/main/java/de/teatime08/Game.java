@@ -13,6 +13,7 @@ public class Game implements Closeable, Banq {
     protected final Set<Cell> initial = new HashSet<>();
     protected final Set<Cell> cells = new HashSet<>();
     protected int generation = 0;
+    protected int totalGenerations = 0;
 
     public final ShapesDetector shapesDetector;
 
@@ -62,6 +63,7 @@ public class Game implements Closeable, Banq {
         handleNextGerationFinished(shapeDetected);
         banq("next-handleGenerationFinished", System.nanoTime() - banqT);
         generation++;
+        totalGenerations++;
     }
 
     public void clear() {
@@ -169,6 +171,7 @@ public class Game implements Closeable, Banq {
 
     @Override
     public void close() {
+        System.out.println("Total gens:" + totalGenerations);
         printMedians();
     }
 }

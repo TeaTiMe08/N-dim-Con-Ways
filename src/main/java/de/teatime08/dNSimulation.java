@@ -5,11 +5,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class dNSimulation extends Game {
-
     final static Random random = new Random(System.currentTimeMillis());
 
     static int DIMENSION = 3;
-    final static double lowerBoundCellsPerSim = 0.0, upperBoundCellsPerSim = 0.3;
+    final static double lowerBoundCellsPerSim = 0.0, upperBoundCellsPerSim = 0.9;
     final static int numberGenerationsCheckedBeforeRegenerate = 150000;
     final static int numberCyclesPerRadius = 1000;
     int currentCubeSizeCycle = 0;

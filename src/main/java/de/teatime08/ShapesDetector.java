@@ -79,7 +79,6 @@ public class ShapesDetector implements Banq {
     }
 
     private static Set<Set<Cell>> splitIntoComputeUnits(Set<Cell> cells) {
-        int dim = cells.stream().findFirst().get().getPosition().length;
         final Set<Set<Cell>> splits = new HashSet<>();
         cells.stream().forEach(cell -> {
             Set<Set<Cell>> alreadyFound = splits.parallelStream().filter(set -> set.contains(cell)).collect(Collectors.toSet());
