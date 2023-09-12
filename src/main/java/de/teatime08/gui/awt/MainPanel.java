@@ -103,6 +103,10 @@ public class MainPanel extends JPanel {
             g.setColor(Color.white);
             g.drawString(generationText, 810, 12 + (int)(0.5 * speedFont.getSize()));
         }
+
+        g.setFont(bigFont);
+        g.setColor(Color.BLACK);
+        g.drawString(gui.game.shapesDetector.getFoundShapes().size() + "Shapes found", 890, 12 + (int)(0.5 * bigFont.getSize()));
     }
 
     private void updateTimedTextLabels() {
