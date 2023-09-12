@@ -53,19 +53,23 @@ public interface Banq {
      */
     public default String printToString() {
         StringBuilder sb = new StringBuilder();
-        banqMeasures.forEach((x, y) -> {
-            y.forEach(z -> sb.append(String.format("%-40s", x) + z.toString() + "\n"));
-        });
+        synchronized (banqMeasures) {
+            banqMeasures.forEach((x, y) -> {
+                y.forEach(z -> sb.append(String.format("%-40s", x) + z.toString() + "\n"));
+            });
+        }
         return sb.toString();
     }
 
     public default void printMedians() {
         Set<String> unordered = new HashSet<>();
-        banqMeasures.forEach((x, y) -> unordered.add(
-            String.format("%-20s", x) + "| " +
-                calculateMedian(y.stream().map(BanqTick::benchNanoTime).collect(Collectors.toList())) / 1_000_000 //milliseconds
-        ));
-        unordered.stream().sorted().forEach(System.out::println);
+        synchronized (banqMeasures) {
+            banqMeasures.forEach((x, y) -> unordered.add(
+                    String.format("%-20s", x) + "| " +
+                            calculateMedian(y.stream().map(BanqTick::benchNanoTime).collect(Collectors.toList())) / 1_000_000 //milliseconds
+            ));
+            unordered.stream().sorted().forEach(System.out::println);
+        }
     }
 
     /**
