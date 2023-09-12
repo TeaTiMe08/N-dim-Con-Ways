@@ -40,6 +40,8 @@ public class Gui extends JFrame {
         thus = this;
         this.game = game;
 
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/logo.png")));
+
         initKeyAdapter();
         initWindowAdapter();
 
