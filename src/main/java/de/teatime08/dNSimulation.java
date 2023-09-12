@@ -9,11 +9,11 @@ public class dNSimulation extends Game {
     final static Random random = new Random(System.currentTimeMillis());
 
     static int DIMENSION = 3;
-    final static double lowerBoundCellsPerSim = 0.0, upperBoundCellsPerSim = 0.01;
+    final static double lowerBoundCellsPerSim = 0.0, upperBoundCellsPerSim = 0.3;
     final static int numberGenerationsCheckedBeforeRegenerate = 150000;
     final static int numberCyclesPerRadius = 1000;
     int currentCubeSizeCycle = 0;
-    int currentCubeSize = 4;
+    int currentCubeSize = 3;
 
     public dNSimulation() {
         cells.addAll(generateRandomCellsFor(DIMENSION, currentCubeSize));
@@ -58,9 +58,10 @@ public class dNSimulation extends Game {
      * @param radius the radius ot maximum negative ir positive value the cell can have
      * @return a new set of cells wich is reflected.
      */
-    public static Set<Cell> generateRandomDimReflection(int dimension, int radius) {
+    public Set<Cell> generateRandomDimReflection(int dimension, int radius) {
+        long banqt = System.nanoTime();
         // random number of possible reflected axes in dimension space
-        int randomReflectionDimension = new Random().nextInt(1, dimension);
+        int randomReflectionDimension = new Random().nextInt(0, dimension + 1);
         // create quadrant reflection for all reflected == random cell in any quadrant
         boolean[] isReflectedQuadrant = new boolean[dimension];
         Arrays.fill(isReflectedQuadrant, true);
@@ -96,6 +97,7 @@ public class dNSimulation extends Game {
             // add all mirrored cells for this axes and repeat for (if any) other axes, until all are mirrored.
             out.addAll(mirrored);
         }
+        banq("generateRandomDimReflection", System.nanoTime() - banqt);
         return out;
     }
 
@@ -113,6 +115,7 @@ public class dNSimulation extends Game {
 
     public static double rangeOfCellsToCreate(int dimension, int radius) {
         double total = Math.pow(1 + (2 * radius), dimension);
+        total = total * Math.pow(10, - (dimension - 1.5));
         try {
             return random.nextDouble(lowerBoundCellsPerSim * total, upperBoundCellsPerSim * total);
         } catch (IllegalArgumentException e) {

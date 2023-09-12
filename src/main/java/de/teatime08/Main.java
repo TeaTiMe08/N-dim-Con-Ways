@@ -7,9 +7,9 @@ import de.teatime08.shapes.IStringIO;
 import java.awt.*;
 public class Main {
     public static void main(String[] args) {
-        //Game g = new dNSimulation(4);
+        Game g = new dNSimulation(3);
         //Game g = new Game(D2.GOSPER_GLIDER_GUN);
-        Game g = new Game(IStringIO.fromString("[-2, -3, -3, -2], [-2, -3, -2, -2], [-1, -3, -3, -2], [1, -3, -3, -2], [-2, -3, 2, -2], [-1, -3, -2, -2], [2, -3, -2, -2], [1, -3, -2, -2], [2, -3, -3, -2], [-1, -3, 2, -2], [-2, -3, 3, -2], [1, -3, 3, -2], [2, -3, 2, -2], [1, -3, 2, -2], [-1, -3, 3, -2], [2, -3, 3, -2]"));
+        //Game g = new Game(IStringIO.fromString("[-6, -3], [-5, -2], [-7, -4], [-7, -2], [-6, -1], [-8, -3]"));
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 Gui gui = new Gui(g);

@@ -5,8 +5,6 @@ import org.jgrapht.alg.isomorphism.VF2GraphIsomorphismInspector;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 
-import java.io.Closeable;
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -86,7 +84,7 @@ public class ShapesDetector implements Banq {
         cells.stream().forEach(cell -> {
             Set<Set<Cell>> alreadyFound = splits.parallelStream().filter(set -> set.contains(cell)).collect(Collectors.toSet());
             Set<Cell> singleNeighbours = cells.parallelStream()
-                .filter(cellfilter -> cell.calculateManhattanDistanceTo(cellfilter) <= dim) //todo why dim not dim-1
+                .filter(cellfilter -> cell.isNeighbourOfWithMaxDistance(cellfilter, 1))
                 .collect(Collectors.toSet());
             if (alreadyFound.isEmpty()) {
                 singleNeighbours.add(cell);
