@@ -26,12 +26,14 @@ public class ConwaysConfiguration extends IConfiguration implements Banq {
                     long numberNeighbours = neighbours.stream().filter(x -> game.getCells().contains(x)).count();
 
                     // all real neighbours
-                    if (numberNeighbours < 2)
-                        allActions.put(cell, IRule.Action.KILL);
-                    else if (numberNeighbours == 2 || numberNeighbours == 3)
-                        allActions.put(cell, IRule.Action.KEEP);
-                    else
-                        allActions.put(cell, IRule.Action.KILL);
+                    synchronized (allActions) {
+                        if (numberNeighbours < 2)
+                            allActions.put(cell, IRule.Action.KILL);
+                        else if (numberNeighbours == 2 || numberNeighbours == 3)
+                            allActions.put(cell, IRule.Action.KEEP);
+                        else
+                            allActions.put(cell, IRule.Action.KILL);
+                    }
 
                     // generate new potential neighbours for enliven
                     banqT = System.nanoTime();
